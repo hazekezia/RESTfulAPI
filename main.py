@@ -96,11 +96,11 @@ def delete(id):
 # Error Handler
 @app.errorhandler(404)
 def NotFound(error=None):
-    pesan = {
+    message = {
         "status": 404,
         "NotFound": "Tidak ditemukan : " + request.url,
     }
-    api_response = jsonify(pesan)
+    api_response = jsonify(message)
     api_response.status_code = 404
     return api_response
 
