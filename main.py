@@ -4,7 +4,6 @@ from flask import jsonify, flash, request
 from app import app
 from config import mysql
 
-
 sql_connect = mysql.connect()
 cursor = sql_connect.cursor(pymysql.cursors.DictCursor)
 
