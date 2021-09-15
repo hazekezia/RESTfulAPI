@@ -41,8 +41,8 @@ def create():
 		sql_connect.commit()
 
 		message = {
-		"status":"S",
-		"message":"Your data has been added."
+			"status":"S",
+			"message":"Your data has been added."
 		}
 
 		api_response = jsonify(message)
@@ -67,8 +67,8 @@ def update():
 		sql_connect.commit()
 
 		message = {
-		"status":"S",
-		"message":"Your data has been updated."
+			"status":"S",
+			"message":"Your data has been updated."
 		}
 
 		api_response = jsonify(message)
