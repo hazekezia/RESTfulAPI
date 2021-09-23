@@ -31,11 +31,11 @@ def getid(id):
 def create():
 	request_json = request.json
 	name = request_json["nama"]
-	nomor = request_json["nomor"]
+	umur = request_json["umur"]
 
 	if request.method == "POST":
-		SQLCommand = "INSERT INTO one(nama, nomor) VALUES(%s, %s)"
-		Values = (name, nomor)
+		SQLCommand = "INSERT INTO one(nama, umur) VALUES(%s, %s)"
+		Values = (name, umur)
 
 		cursor.execute(SQLCommand, Values)
 		sql_connect.commit()
@@ -57,11 +57,11 @@ def update():
 	request_json = request.json
 	id = request_json["id"]
 	nama = request_json["nama"]
-	nomor = request_json["nomor"]
+	umur = request_json["umur"]
 
 	if request.method == "PUT":
-		SQLCommand = "UPDATE one SET nama=%s, nomor=%s WHERE id=%s"
-		Values = (nama, nomor, id)
+		SQLCommand = "UPDATE one SET nama=%s, umur=%s WHERE id=%s"
+		Values = (nama, umur, id)
 
 		cursor.execute(SQLCommand, Values)
 		sql_connect.commit()
