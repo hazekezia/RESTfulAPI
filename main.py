@@ -70,17 +70,53 @@ def create():
 	else:
 		return NotFound()
 
+# POST - Create Data
+@app.route("/api/create2", methods=["POST"])
+def create2():
+	request_json = request.json
+	counter = len(request.json)
+
+	if request.method == "POST":
+		for i in range(counter):
+			name = request_json[i]["nama"]
+			umur = request_json[i]["umur"]
+
+			for item in request_json[i]["items"]:
+				id_api1 = item["id_api1"]
+				desc = item["deskripsi"]
+				SQLCommand = "INSERT INTO api2(id_api1, deskripsi) VALUES(%s, %s)"
+				Values = (id_api1, desc)
+
+				cursor.execute(SQLCommand, Values)
+				sql_connect.commit()
+
+			SQLCommand = "INSERT INTO api1(nama, umur) VALUES(%s, %s)"
+			Values = (name, umur)
+
+			cursor.execute(SQLCommand, Values)
+			sql_connect.commit()
+
+		message = 	{
+					"status":"S",
+					"message":"Your data has been added."
+					}	
+
+		api_response = jsonify(message)
+		api_response.status_code = 200
+		return api_response
+	else:
+		return NotFound()
+
 # PUT - Update Data
 @app.route("/api/update", methods=["PUT"])
 def update():
 	request_json = request.json
-	id = request_json["id"]
 	nama = request_json["nama"]
 	umur = request_json["umur"]
 
 	if request.method == "PUT":
 		SQLCommand = "UPDATE api1 SET nama=%s, umur=%s WHERE id=%s"
-		Values = (nama, umur, id)
+		Values = (nama, umur, nama)
 
 		cursor.execute(SQLCommand, Values)
 		sql_connect.commit()
