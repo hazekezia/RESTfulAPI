@@ -17,6 +17,7 @@ def get():
 	api_response.status_code = 200
 	return api_response
 
+# GET - Read Data Per ID
 @app.route("/api/<int:id>")
 def getid(id):
 	cursor.execute("SELECT * FROM api1 WHERE id =%s", id)
@@ -35,7 +36,7 @@ def getapi2():
 	api_response.status_code = 200
 	return api_response
 
-# POST - Create Data
+# POST - Create Data (Object)
 @app.route("/api/create_object", methods=["POST"])
 def create_object():
 	request_json = request.json
@@ -71,7 +72,7 @@ def create_object():
 	else:
 		return NotFound()
 
-#TESTINGTESTING
+# POST - Create Data (Array)
 @app.route("/api/create_array", methods=["POST"])
 def create_array():
 	request_json = request.json
