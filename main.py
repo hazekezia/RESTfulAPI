@@ -166,6 +166,7 @@ def update():
 @app.route("/api/delete/<int:id>", methods=["DELETE"])
 def delete(id):
 	cursor.execute("DELETE FROM api1 WHERE id =%s", (id,))
+	cursor.execute("DELETE FROM api2 WHERE id_api1 =%s", (id,))
 	sql_connect.commit()
 
 	message = {
