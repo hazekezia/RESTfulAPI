@@ -1,6 +1,6 @@
 import pymysql
 
-from flask import jsonify, flash, request
+from flask import jsonify, request
 from app import app
 from config import mysql
 
@@ -10,7 +10,7 @@ cursor = sql_connect.cursor(pymysql.cursors.DictCursor)
 # GET - Read Data
 @app.route("/api")
 def get():
-	cursor.execute("SELECT * FROM one")
+	cursor.execute("SELECT * FROM api_test")
 
 	api_result = cursor.fetchall()
 	api_response = jsonify(api_result)
@@ -19,7 +19,7 @@ def get():
 
 @app.route("/api/<int:id>")
 def getid(id):
-	cursor.execute("SELECT * FROM one WHERE id =%s", id)
+	cursor.execute("SELECT * FROM api_test WHERE id =%s", id)
 	
 	api_result = cursor.fetchone()
 	api_response = jsonify(api_result)
@@ -27,23 +27,27 @@ def getid(id):
 	return api_response
 
 # POST - Create Data
-@app.route("/create", methods=["POST"])
+@app.route("/api/create", methods=["POST"])
 def create():
 	request_json = request.json
-	name = request_json["nama"]
-	umur = request_json["umur"]
+	counter = len(request_json)
+	print(counter)
 
 	if request.method == "POST":
-		SQLCommand = "INSERT INTO one(nama, umur) VALUES(%s, %s)"
-		Values = (name, umur)
+		for i in range(counter):
+			name = request_json[i]["nama"]
+			umur = request_json[i]["umur"]
 
-		cursor.execute(SQLCommand, Values)
-		sql_connect.commit()
+			SQLCommand = "INSERT INTO api_test(nama, umur) VALUES(%s, %s)"
+			Values = (name, umur)
 
-		message = {
-			"status":"S",
-			"message":"Your data has been added."
-		}
+			cursor.execute(SQLCommand, Values)
+			sql_connect.commit()
+
+		message = 	{
+					"status":"S",
+					"message":"Your data has been added."
+					}	
 
 		api_response = jsonify(message)
 		api_response.status_code = 200
@@ -52,7 +56,7 @@ def create():
 		return NotFound()
 
 # PUT - Update Data
-@app.route("/update", methods=["PUT"])
+@app.route("/api/update", methods=["PUT"])
 def update():
 	request_json = request.json
 	id = request_json["id"]
@@ -60,7 +64,7 @@ def update():
 	umur = request_json["umur"]
 
 	if request.method == "PUT":
-		SQLCommand = "UPDATE one SET nama=%s, umur=%s WHERE id=%s"
+		SQLCommand = "UPDATE api_test SET nama=%s, umur=%s WHERE id=%s"
 		Values = (nama, umur, id)
 
 		cursor.execute(SQLCommand, Values)
@@ -78,9 +82,9 @@ def update():
 		return NotFound()
 
 # DELETE - Delete Data
-@app.route("/delete/<int:id>", methods=["DELETE"])
+@app.route("/api/delete/<int:id>", methods=["DELETE"])
 def delete(id):
-	cursor.execute("DELETE FROM one WHERE id =%s", (id,))
+	cursor.execute("DELETE FROM api_test WHERE id =%s", (id,))
 	sql_connect.commit()
 
 	message = {
