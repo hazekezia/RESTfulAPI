@@ -62,9 +62,9 @@ def create_object():
 			sql_connect.commit()
 
 		message = 	{
-					"status":"S",
-					"message":"Your data has been added."
-					}	
+			"status":"S",
+			"message":"Your data has been added."
+		}	
 
 		api_response = jsonify(message)
 		api_response.status_code = 200
@@ -116,9 +116,9 @@ def create_array():
 				sql_connect.commit()
 		
 		message = 	{
-						"status":"S",
-						"message":"Your data has been updated."
-					}
+			"status":"S",
+			"message":"Your data has been updated."
+		}
 
 		api_response = jsonify(message)
 		api_response.status_code = 200
