@@ -36,28 +36,29 @@ def getapi2():
 	return api_response
 
 # POST - Create Data
-@app.route("/api/create", methods=["POST"])
-def create():
+@app.route("/api/create_object", methods=["POST"])
+def create_object():
 	request_json = request.json
 
 	if request.method == "POST":
 		name = request_json["nama"]
 		umur = request_json["umur"]
 
+		SQLCommand = "INSERT INTO api1(nama, umur) VALUES(%s, %s)"
+		Values = (name, umur)
+
+		cursor.execute(SQLCommand, Values)
+		sql_connect.commit()
+
+		id_api1 = cursor.lastrowid
+
 		for item in request_json["items"]:
-			id_api1 = item["id_api1"]
 			desc = item["deskripsi"]
 			SQLCommand = "INSERT INTO api2(id_api1, deskripsi) VALUES(%s, %s)"
 			Values = (id_api1, desc)
 
 			cursor.execute(SQLCommand, Values)
 			sql_connect.commit()
-
-		SQLCommand = "INSERT INTO api1(nama, umur) VALUES(%s, %s)"
-		Values = (name, umur)
-
-		cursor.execute(SQLCommand, Values)
-		sql_connect.commit()
 
 		message = 	{
 					"status":"S",
@@ -70,9 +71,9 @@ def create():
 	else:
 		return NotFound()
 
-# POST - Create Data
-@app.route("/api/create2", methods=["POST"])
-def create2():
+#TESTINGTESTING
+@app.route("/api/create_array", methods=["POST"])
+def create_array():
 	request_json = request.json
 	counter = len(request.json)
 
@@ -81,25 +82,42 @@ def create2():
 			name = request_json[i]["nama"]
 			umur = request_json[i]["umur"]
 
+			cursor.execute("SELECT id FROM api1 where nama=%s", (name))
+			data = cursor.fetchone()
+			print(data)
+
+			if (cursor.rowcount >= 1):
+				id_fetch = data["id"]
+				SQLCommand = "UPDATE api1 SET nama=%s, umur=%s WHERE id=%s"
+				Values = (name, umur, id_fetch)
+
+				cursor.execute(SQLCommand, Values)
+				sql_connect.commit()
+				id_api1 = id_fetch
+				print(id_fetch)	
+
+			elif (cursor.rowcount == 0):
+				SQLCommand = "INSERT INTO api1(nama, umur) VALUES(%s, %s)"
+				Values = (name, umur)
+
+				cursor.execute(SQLCommand, Values)
+				sql_connect.commit()
+				id_api1 = cursor.lastrowid
+
+			cursor.execute("DELETE FROM api2 WHERE id_api1 =%s", (id_api1,))
+
 			for item in request_json[i]["items"]:
-				id_api1 = item["id_api1"]
 				desc = item["deskripsi"]
 				SQLCommand = "INSERT INTO api2(id_api1, deskripsi) VALUES(%s, %s)"
 				Values = (id_api1, desc)
 
 				cursor.execute(SQLCommand, Values)
 				sql_connect.commit()
-
-			SQLCommand = "INSERT INTO api1(nama, umur) VALUES(%s, %s)"
-			Values = (name, umur)
-
-			cursor.execute(SQLCommand, Values)
-			sql_connect.commit()
-
+		
 		message = 	{
-					"status":"S",
-					"message":"Your data has been added."
-					}	
+						"status":"S",
+						"message":"Your data has been updated."
+					}
 
 		api_response = jsonify(message)
 		api_response.status_code = 200
@@ -111,15 +129,27 @@ def create2():
 @app.route("/api/update", methods=["PUT"])
 def update():
 	request_json = request.json
+	id = request_json["id"]
 	nama = request_json["nama"]
 	umur = request_json["umur"]
 
 	if request.method == "PUT":
+
 		SQLCommand = "UPDATE api1 SET nama=%s, umur=%s WHERE id=%s"
-		Values = (nama, umur, nama)
+		Values = (nama, umur, id)
 
 		cursor.execute(SQLCommand, Values)
 		sql_connect.commit()
+
+		cursor.execute("DELETE FROM api2 WHERE id_api1 =%s", (id,))
+
+		for item in request_json["items"]:
+			desc = item["deskripsi"]
+			SQLCommand = "INSERT INTO api2(id_api1, deskripsi) VALUES(%s, %s)"
+			Values = (id, desc)
+
+			cursor.execute(SQLCommand, Values)
+			sql_connect.commit()
 
 		message = {
 			"status":"S",
