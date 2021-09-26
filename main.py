@@ -18,17 +18,12 @@ def get():
 	api_result1 = cursor1.fetchall()
 
 	result = []
-	items = []
-
-	for item in api_result1:
-		items.append(
-			{
-				"id_api1" : item["id_api1"],
-				"deskripsi" : item["deskripsi"]
-			}
-		)
 
 	for row in api_result:
+		items = []
+		for item in api_result1:
+			if item["id_api1"] == row["id"]:
+				items.append(item)
 		result.append(
 			{
 				"id" : row["id"],
@@ -42,7 +37,6 @@ def get():
 	api_response.status_code = 200
 	return api_response
 
-# GET - Read Data Per ID
 @app.route("/api/<int:id>")
 def getid(id):
 	cursor.execute("SELECT * FROM api1 WHERE id =%s", id)
@@ -51,41 +45,24 @@ def getid(id):
 	api_result = cursor.fetchall()
 	api_result1 = cursor1.fetchall()
 
-	result = []
-	items = []
+	result = {}
+	items = {}
 
 	for item in api_result1:
-		items.append(
-			{
-				"id_api1" : item["id_api1"],
-				"deskripsi" : item["deskripsi"]
-			}
-		)
+		items["id_api1"] = item["id_api1"]
+		items["deskripsi"] = item["deskripsi"]
 
 	for row in api_result:
-		result.append(
-			{
-				"id" : row["id"],
-				"nama " : row["nama"],
-				"umur" : row["umur"],
-				"items" : items
-			}
-		)
-		
+		result["id"] = row["id"]
+		result["nama"] = row["nama"]
+		result["umur"] = row["umur"]
+		result["items"] = items
+
 	api_response = jsonify(result)
 	api_response.status_code = 200
 	return api_response
 
-@app.route("/api2")
-def getapi2():
-	cursor.execute("SELECT * FROM api2")
-
-	api_result = cursor.fetchall()
-	api_response = jsonify(api_result)
-	api_response.status_code = 200
-	return api_response
-
-# POST - Create Data (Object)
+# POST - Create Data
 @app.route("/api/create_object", methods=["POST"])
 def create_object():
 	request_json = request.json
@@ -111,9 +88,9 @@ def create_object():
 			sql_connect.commit()
 
 		message = 	{
-			"status":"S",
-			"message":"Your data has been added."
-		}	
+					"status":"S",
+					"message":"Your data has been added."
+					}	
 
 		api_response = jsonify(message)
 		api_response.status_code = 200
@@ -121,7 +98,7 @@ def create_object():
 	else:
 		return NotFound()
 
-# POST - Create Data (Array)
+#TESTINGTESTING
 @app.route("/api/create_array", methods=["POST"])
 def create_array():
 	request_json = request.json
@@ -165,9 +142,9 @@ def create_array():
 				sql_connect.commit()
 		
 		message = 	{
-			"status":"S",
-			"message":"Your data has been updated."
-		}
+						"status":"S",
+						"message":"Your data has been updated."
+					}
 
 		api_response = jsonify(message)
 		api_response.status_code = 200
