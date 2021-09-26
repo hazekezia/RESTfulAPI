@@ -46,11 +46,15 @@ def getid(id):
 	api_result1 = cursor1.fetchall()
 
 	result = {}
-	items = {}
+	items = []
 
 	for item in api_result1:
-		items["id_api1"] = item["id_api1"]
-		items["deskripsi"] = item["deskripsi"]
+		items.append(
+			{
+				"id_api1" : item["id_api1"],
+				"deskripsi" : item["deskripsi"]
+			}
+		)
 
 	for row in api_result:
 		result["id"] = row["id"]
