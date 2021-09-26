@@ -12,9 +12,33 @@ cursor1 = sql_connect.cursor(pymysql.cursors.DictCursor)
 @app.route("/api")
 def get():
 	cursor.execute("SELECT * FROM api1")
-
+	cursor1.execute("SELECT * FROM api2")
+	
 	api_result = cursor.fetchall()
-	api_response = jsonify(api_result)
+	api_result1 = cursor1.fetchall()
+
+	result = []
+	items = []
+
+	for item in api_result1:
+		items.append(
+			{
+				"id_api1" : item["id_api1"],
+				"deskripsi" : item["deskripsi"]
+			}
+		)
+
+	for row in api_result:
+		result.append(
+			{
+				"id" : row["id"],
+				"nama " : row["nama"],
+				"umur" : row["umur"],
+				"items" : items
+			}
+		)
+				
+	api_response = jsonify(result)
 	api_response.status_code = 200
 	return api_response
 
